@@ -264,7 +264,11 @@
             color: rgba(26, 26, 26, 1);
         }
 
-        .ejRuwW {            
+        .ejRuwW {
+            /*margin-left: 6px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;*/
             cursor: pointer;
             line-height: 24px;
             margin-top: 8px;
@@ -410,11 +414,10 @@
             text-align: center;
             color: white;
         }
-        
-        .w-100{
+
+        .w-100 {
             margin-top: 10px;
         }
-
     </style>
 
 </head>
@@ -456,20 +459,22 @@
                                                                 </path>
                                                             </svg>
                                                         </div>
-                                                    </div>                                                    
-                                                    <!-- File upload form -->
-                                                    <form id="uploadForm" enctype="multipart/form-data" method="post"
-                                                        action="upload.php">
-                                                        <label for="myfile">Select a file: &nbsp</label>
-                                                        <input type="file" id="myfile" name="myfile" accept="audio/*"
-                                                            multiple="multiple" />
-                                                    </form>
-                                                    <!-- Progress bar -->
-                                                    <div class="progress">
-                                                        <div class="progress-bar"></div>
                                                     </div>
-                                                    <!-- Display upload status -->
-                                                    <div id="uploadStatus"></div>
+                                                    <div id="audioSection">
+                                                        <!-- File upload form -->
+                                                        <form id="uploadForm" enctype="multipart/form-data"
+                                                            method="post" action="upload.php">
+                                                            <label for="myfile">Select a file: &nbsp</label>
+                                                            <input type="file" id="myfile" name="myfile"
+                                                                accept="audio/*" multiple="multiple" />
+                                                        </form>
+                                                        <!-- Progress bar -->
+                                                        <div class="progress">
+                                                            <div class="progress-bar"></div>
+                                                        </div>
+                                                        <!-- Display upload status -->
+                                                        <div id="uploadStatus"></div>
+                                                    </div>
                                                 </button>
                                             </div>
                                         </div>
@@ -495,40 +500,122 @@
                                         <div class="sc-1rkezdt-6 cxdwsz">or drop files here</div>
 
                                         <button id="submitButton" class="sc-1rd62mt-2 ejRuwW" name="toFormat">Convert
-                                            Files &nbsp;</>
-                                            <!--<select name:"files-name" id="files" width="1px">
-                                            <option value="mp3"><a class="page-link">mp3</a></option>
-                                            <option value="wav"><a class="page-link">wav</a></option>
-                                            <option value="ogg"><a class="page-link">ogg</a></option>
-                                            <option value="flac"><a class="page-link">flac</a></option>
-                                            <option value="wma"><a class="page-link">wma</a></option>
-                                            <option value="m4a"><a class="page-link">m4a</a></option>
-                                            <option value="pcm"><a class="page-link">pcm</a></option>
-                                            <option value="amr"><a class="page-link">amr</a></option>
-                                            <option value="aiff"><a class="page-link">aiff</a></option>
-                                            <option value="aac"><a class="page-link">aac</a></option>
-                                            <option value="mp4"><a class="page-link">mp4</a></option>
-                                        </select> -->
-                                            <form>
-                                                <input type="hidden" id="formats" value="audio">
-                                                <input type="hidden" id="accepts" value="audio/*">
-                                                <input type="hidden" id="options"
-                                                    value="audio_quality;select;Audio quality;,8,16,24,32,40,48,64,80,96,112,128,160,192,224,256,320;;;;(kbit/s);;,0,1">
-                                            </form>
+                                            Files &nbsp;</button>
+                                        <div id="convertingAlert" class="alert" style="display:none;">
+                                            "Converting...."
+                                        </div>
+
+                                        <form>
+                                            <input type="hidden" id="formats" value="audio">
+                                            <input type="hidden" id="accepts" value="audio/*">
+                                            <input type="hidden" id="options"
+                                                value="audio_quality;select;Audio quality;,8,16,24,32,40,48,64,80,96,112,128,160,192,224,256,320;;;;(kbit/s);;,0,1">
+                                        </form>
                                     </div>
+                                </div>
+                                <div id="successfulConversion" style="display:none;background-color:black" class="conversion">
+                                    <p>
+                                        <span style="background-color: white;padding: 5px;">Your conversion was successful.</span>
+                                    </p>
+                                    <p>Click on the 'Download' button, then press 'Save link as..':</p>
+                                    <p>
+                                        <a target="_blank" id="successfulConversionLink" class="download">Download</a>
+                                    </p>
+                                    <p>
+                                        <a id="reloadPage" class="reload">Make another conversion</a>
+                                    </p>
+                                </div>
+                                <div id="unsuccessfulConversion" style="display:none;background-color:black" class="conversion">
+                                    <P>There was an error converting file, please try again.</p>
+                                    <p>
+                                        <a id="reloadPage" class="reload">Make another conversion</a>
+                                    </p>
+                                </div>
                                 </label>
-                            </form>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    </div>
 
-</body>
+    <script>
 
-</html>
-<script>
+        (function () {
+            ("#header").load("../resources/header");
+            ("#footer").load("../resources/footer");
+        });
+
+    </script>
+
+    <script>
+
+        ("#audioSection").show()
+
+        (".page-link").on("click", function () {
+            (this).siblings().removeClass("active")
+            (this).addClass("active")
+            ("input[name='toFormat']").val((this).children().html())
+            validateInputs()
+        })
+
+        ("input[name='myfile']").on("change", function () {
+            var MAX_FILE_SIZE = 50 * 1024 * 1024;
+            var fileSize = this.files[0].size;
+            if (fileSize > MAX_FILE_SIZE) {
+                this.setCustomValidity("File must not exceed 50MB!");
+                this.reportValidity();
+            } else {
+                this.setCustomValidity("");
+            }
+
+            validateInputs()
+        });
+
+        function validateInputs() {
+            if (("input[name='myfile']").val() &&
+                ("input[name='toFormat']").val()) {
+                ("#submitButton").removeClass("disabled")
+            } else {
+                ("#submitButton").addClass("disabled")
+            }
+        }
+
+        ("#submitButton").on("click", function () {
+            if ((this).hasClass("disabled")) return;
+            (this).addClass("disabled")
+            ("#convertingAlert").show()
+            var formData = new FormData();
+            formData.append('myfile', ("input[name='myfile']")[0].files[0])
+            formData.append('toFormat', ("input[name='toFormat']").val())
+
+
+            .ajax({
+                type: 'POST',
+                url: 'http://127.0.0.1:5500/PDF%20ui.html',
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false
+            }).done(function (data) {
+                if (data.success) {
+                    window.localStorage.setItem('conversionMade', 'true');
+                    ("#audioSection").hide()
+                    ("#successfulConversion").show()
+                    ("#successfulConversionLink").attr('href', data.url)
+                } else if (data.failure) {
+                    ("#unsuccessfulConversion").show()
+                }
+            });
+        })
+
+        ("#reloadPage").on("click", function () {
+            return window.location.reload()
+        })
+
+    </script>
+    <script>
 
     function _(element) {
         return document.getElementById(element);
@@ -587,5 +674,9 @@
         }
 
     };
-   
+
 </script>
+
+</body>
+
+</html>
