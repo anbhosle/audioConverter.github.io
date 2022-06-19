@@ -410,6 +410,11 @@
             text-align: center;
             color: white;
         }
+        
+        .w-100{
+            margin-top: 10px;
+        }
+
     </style>
 
 </head>
@@ -453,9 +458,10 @@
                                                         </div>
                                                     </div>                                                    
                                                     <!-- File upload form -->
-                                                    <form id="uploadForm" enctype="multipart/form-data" method="post" action="upload.php">
+                                                    <form id="uploadForm" enctype="multipart/form-data" method="post"
+                                                        action="upload.php">
                                                         <label for="myfile">Select a file: &nbsp</label>
-                                                        <input type="file" id="myfile" name="myfile"
+                                                        <input type="file" id="myfile" name="myfile" accept="audio/*"
                                                             multiple="multiple" />
                                                     </form>
                                                     <!-- Progress bar -->
@@ -463,31 +469,52 @@
                                                         <div class="progress-bar"></div>
                                                     </div>
                                                     <!-- Display upload status -->
-                                                    <div id="uploadStatus"></div>                                                    
+                                                    <div id="uploadStatus"></div>
                                                 </button>
                                             </div>
                                         </div>
+                                        <div class="w-100">
+                                            <nav aria-label="page navigation example">
+                                                <span class="pagination" style="color:white;">Convert to:</span>
+                                                <input type="hidden" name="toFormat">
+                                                <select name:"files-name" id="files" width="1px">
+                                                    <option value="mp3"><a class="page-link">mp3</a></option>
+                                                    <option value="wav"><a class="page-link">wav</a></option>
+                                                    <option value="ogg"><a class="page-link">ogg</a></option>
+                                                    <option value="flac"><a class="page-link">flac</a></option>
+                                                    <option value="wma"><a class="page-link">wma</a></option>
+                                                    <option value="m4a"><a class="page-link">m4a</a></option>
+                                                    <option value="pcm"><a class="page-link">pcm</a></option>
+                                                    <option value="amr"><a class="page-link">amr</a></option>
+                                                    <option value="aiff"><a class="page-link">aiff</a></option>
+                                                    <option value="aac"><a class="page-link">aac</a></option>
+                                                    <option value="mp4"><a class="page-link">mp4</a></option>
+                                                </select>
+                                            </nav>
+                                        </div>
                                         <div class="sc-1rkezdt-6 cxdwsz">or drop files here</div>
 
-                                        <button class="sc-1rd62mt-2 ejRuwW">Convert Files &nbsp;</>
-                                        <select name:"files-name" id="files" width="1px">
-                                            <option value="mp3">mp3</option>
-                                            <option value="wav">wav</option>
-                                            <option value="ogg">ogg</option>
-                                            <option value="flac">flac</option>
-                                            <option value="wma">wma</option>
-                                            <option value="m4a">m4a</option>
-                                            <option value="pcm">pcm</option>
-                                            <option value="amr">amr</option>
-                                            <option value="aiff">aiff</option>
-                                            <option value="aac">aac</option>
-                                            <option value="mp4">mp4</option>
-                                        </select>
-                                        <form>
-                                            <input type="hidden" id="formats" value="audio">
-                                            <input type="hidden" id="accepts" value="audio/*">
-                                            <input type="hidden" id="options" value="audio_quality;select;Audio quality;,8,16,24,32,40,48,64,80,96,112,128,160,192,224,256,320;;;;(kbit/s);;,0,1">
-                                        </form>
+                                        <button id="submitButton" class="sc-1rd62mt-2 ejRuwW" name="toFormat">Convert
+                                            Files &nbsp;</>
+                                            <!--<select name:"files-name" id="files" width="1px">
+                                            <option value="mp3"><a class="page-link">mp3</a></option>
+                                            <option value="wav"><a class="page-link">wav</a></option>
+                                            <option value="ogg"><a class="page-link">ogg</a></option>
+                                            <option value="flac"><a class="page-link">flac</a></option>
+                                            <option value="wma"><a class="page-link">wma</a></option>
+                                            <option value="m4a"><a class="page-link">m4a</a></option>
+                                            <option value="pcm"><a class="page-link">pcm</a></option>
+                                            <option value="amr"><a class="page-link">amr</a></option>
+                                            <option value="aiff"><a class="page-link">aiff</a></option>
+                                            <option value="aac"><a class="page-link">aac</a></option>
+                                            <option value="mp4"><a class="page-link">mp4</a></option>
+                                        </select> -->
+                                            <form>
+                                                <input type="hidden" id="formats" value="audio">
+                                                <input type="hidden" id="accepts" value="audio/*">
+                                                <input type="hidden" id="options"
+                                                    value="audio_quality;select;Audio quality;,8,16,24,32,40,48,64,80,96,112,128,160,192,224,256,320;;;;(kbit/s);;,0,1">
+                                            </form>
                                     </div>
                                 </label>
                             </form>
@@ -497,7 +524,8 @@
             </div>
         </div>
     </div>
- </body>
+
+</body>
 
 </html>
 <script>
@@ -559,5 +587,5 @@
         }
 
     };
-    
-</script>
+
+   </script>
